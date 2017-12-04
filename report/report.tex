@@ -1,0 +1,48 @@
+\documentclass[10pt,conference,compsocconf]{IEEEtran}
+
+\usepackage{hyperref}
+\usepackage{graphicx}	% For figure environment
+\usepackage{authblk}
+
+\title{Project 2 on Machine Learning\\Text classification\\Team Yoor}
+
+\author[1]{Sergei Volodin}
+\author[1]{Baran Nama}
+\author[1]{Omar Mehio}
+\affil[1]{EPFL}
+\affil[ ]{\textit {\{sergei.volodin,baran.nama,omar.mehio\}@epfl.ch}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+A classification dataset consisting of Tweets is being studied. First, the data is thoroughly explored using visual aids. Several basic Natural Language Processing methods are applied. Results are evaluated using cross-validation. Model overview is given and the best model is chosen.
+\end{abstract}
+
+\section{Introduction}
+Claim: it is possible to find a model which fits the data better than the current state-of-the-art.
+\begin{enumerate}
+	\item What is the data (preprocessed tweets \cite{data})
+	\item What are we trying to do? Get the best classification score, compared to the state-of-the-art \cite{sota}
+	\item Overview of data, diagrams of features, feature selection, feature augmentation
+	\item Methods and their choice (glove, word2vec, cnn, rnn, cbow, skip-gram) because of the problem statement: classify variable-length arrays of sparse one-hot vectors with local structure (text)
+\end{enumerate}
+\section{Models and Methods}
+\begin{enumerate}
+\item Dataset and loss
+\item State of the art description
+\item Baseline: glove.
+\item Preprocessing: stemming, word variants, hashtag removing, ...
+\item Word2Vec
+\item CNN
+\item RNN
+\end{enumerate}
+\section{Results}
+The following models were considered: {\em aba, caba}, the best one is {\em aba} This (does not) correspond to already conducted experiments [99, 98, 97]. Our contribution consists of running {\em method} with {\em xxx} modified with {\em yyy} and this does (not) give an improvement of 0.01231\%
+\section{Discussion}
+Our experiments lack {\em zzz}, which can be improved by doing also {\em ttt}
+\section{Summary}
+We have shown that it is possible to predict tweets using {\em aba} better than state-of-the-art.
+
+\end{document}

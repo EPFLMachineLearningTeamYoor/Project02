@@ -21,9 +21,13 @@ A classification dataset consisting of Tweets is being studied. First, the data 
 \end{abstract}
 
 \section{Introduction}
+This paper investigates into improving the quality of sentiment analysis on Tweets dataset \cite{kaggle}. It consists of $N_1=N_2=1250000$ positive/negative tweets, each of them representing a message in alphabet $\Sigma$ with no longer than 140 characters. This way, each of $N=N_1+N_2=2500000$ tweets is assigned to one of the classes $\mathcal{C}=\{+1,-1\}$. The task is to minimize the classification error. In other words, if $\mathcal{D}=\{(x_n, y_n)\}_{n=1}^N$ is the dataset with tweets $x_i\in\Sigma^*$ being messages and $y_n\in \mathcal{C}$ being class labels, the goal is to train a classifier $f\colon\, \Sigma^*\to\mathcal{C}$ which minimizes the loss function $l(y,\hat{y})=[y\neq \hat{y}]$.
+
+The task of sentiment analysis of tweets was thoroughly studied \cite{sota1, sota2}. Several techniques were applied, mostly consisting of two steps. First, the words are converted to dense vectors using Glove, word2vec, cbow or skip-gram models. After that, the resulting word vectors are used to construct features for the whole tweet. At the end, the vector is feeded into a classifier, such as SVM or Logistic Regression. Two latter steps might be replaces with a neural network accepting variable-length input such as RNN or CNN. Moreover, the embeddings themselves might be trained using backpropagation while training the classifier.
+
 Claim: it is possible to find a model which fits the data better than the current state-of-the-art.
 \begin{enumerate}
-	\item What is the data (preprocessed tweets \cite{data})
+	\item What is the data (preprocessed tweets \cite{kaggle}) +
 	\item What are we trying to do? Get the best classification score, compared to the state-of-the-art \cite{sota}
 	\item Overview of data, diagrams of features, feature selection, feature augmentation
 	\item Methods and their choice (glove, word2vec, cnn, rnn, cbow, skip-gram) because of the problem statement: classify variable-length arrays of sparse one-hot vectors with local structure (text)
@@ -45,4 +49,10 @@ Our experiments lack {\em zzz}, which can be improved by doing also {\em ttt}
 \section{Summary}
 We have shown that it is possible to predict tweets using {\em aba} better than state-of-the-art.
 
+\begin{thebibliography}{99}
+	\bibitem{twitter} \href{http://twitter.com}{Twitter}
+	\bibitem{sota1} Go, Alec, Lei Huang, and Richa Bhayani. "Twitter sentiment analysis." Entropy 17 (2009): 252.
+	\bibitem{sota2} Kouloumpis, Efthymios, Theresa Wilson, and Johanna D. Moore. "Twitter sentiment analysis: The good the bad and the omg!." Icwsm 11.538-541 (2011): 164.
+	\bibitem{kaggle} \href{https://www.kaggle.com/c/epfml17-text/data}{Competition} and data downloads on kaggle.com
+\end{thebibliography}
 \end{document}

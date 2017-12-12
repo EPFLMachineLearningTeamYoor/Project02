@@ -1,0 +1,1 @@
+../glove/build_vocab.sh

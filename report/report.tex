@@ -21,18 +21,58 @@ A classification dataset consisting of Tweets is being studied. First, the data 
 \end{abstract}
 
 \section{Introduction}
-This paper investigates into improving the quality of sentiment analysis on Tweets dataset \cite{kaggle}. It consists of $N_1=N_2=1250000$ positive/negative tweets, each of them representing a message in alphabet $\Sigma$ with no longer than 140 characters. This way, each of $N=N_1+N_2=2500000$ tweets is assigned to one of the classes $\mathcal{C}=\{+1,-1\}$. The task is to minimize the classification error. In other words, if $\mathcal{D}=\{(x_n, y_n)\}_{n=1}^N$ is the dataset with tweets $x_i\in\Sigma^*$ being messages and $y_n\in \mathcal{C}$ being class labels, the goal is to train a classifier $f\colon\, \Sigma^*\to\mathcal{C}$ which minimizes the loss function $l(y,\hat{y})=[y\neq \hat{y}]$.
+This paper investigates into improving the quality of sentiment analysis on Tweets dataset \cite{kaggle}.
+It consists of $N_1=N_2=1250000$ positive/negative tweets, each of them representing a message in English and numerical alphabet $\Sigma$ with no longer than 140 characters.
+This way, each of $N=N_1+N_2=2500000$ tweets is assigned to one of the classes $\mathcal{C}=\{\mbox{:(},\,\mbox{:)}\}$.
+The task is to minimize the classification error.
+In other words, if $\mathcal{D}=\{(x_n, y_n)\}_{n=1}^N$ is the dataset with tweets $x_i\in\Sigma^*$ being messages and $y_n\in \mathcal{C}$ being class labels, the goal is to train a classifier $f\colon\, \Sigma^*\to\mathcal{C}$ which minimizes the loss function $l(y,\hat{y})=[y\neq \hat{y}]$.
 
-The task of sentiment analysis of tweets was thoroughly studied \cite{sota1, sota2}. Several techniques were applied, mostly consisting of two steps. First, the words are converted to dense vectors using Glove, word2vec, cbow or skip-gram models. After that, the resulting word vectors are used to construct features for the whole tweet. At the end, the vector is feeded into a classifier, such as SVM or Logistic Regression. Two latter steps might be replaces with a neural network accepting variable-length input such as RNN or CNN. Moreover, the embeddings themselves might be trained using backpropagation while training the classifier.
+The task of sentiment analysis of tweets was thoroughly studied \cite{sota1, sota2}.
+Several techniques were applied, mostly consisting of two steps.
+First, the words are converted to dense vectors using Glove, word2vec, cbow or skip-gram models.
+After that, the resulting word vectors are used to construct features for the whole tweet.
+At the end, the vector is feeded into a classifier, such as SVM or Logistic Regression.
+Two latter steps might be replaces with a neural network accepting variable-length input such as RNN or CNN.
+Moreover, the embeddings themselves might be trained using backpropagation while training the classifier.
 
-Claim: it is possible to find a model which fits the data better than the current state-of-the-art.
+Claim: it is possible to find a model which fits the data better than the current state-of-the-art using expert knowledge on the Tweets dataset.
 \begin{enumerate}
 	\item What is the data (preprocessed tweets \cite{kaggle}) +
 	\item What are we trying to do? Get the best classification score, compared to the state-of-the-art \cite{sota}
 	\item Overview of data, diagrams of features, feature selection, feature augmentation
 	\item Methods and their choice (glove, word2vec, cnn, rnn, cbow, skip-gram) because of the problem statement: classify variable-length arrays of sparse one-hot vectors with local structure (text)
 \end{enumerate}
+
+Next sections describe in details our approaches and compare them to various baselines.
 \section{Models and Methods}
+\begin{table*}[htbp]
+	\centering
+	\begin{tabular}[c]{|l|l|l|l|}
+		\hline
+		Class&Id&Message&Comment\\
+		\hline
+		:( & 171 & {\tt <user> 5k i could cry i'm so unfit !} & User tag\\\hline
+		:( & 99804 & {\tt if i feel like this tomorrow i'm going to the er } & Contraction, missed comma\\\hline
+		:) & 524 & {\tt its the weekend ! ! <user> s coming home anddd <user> s baby shower , exciteddd } & Letter repetitions\\\hline
+		:) & 99615 & {\tt <user> aren't you just an adorable granny <url> } & URL tag\\\hline
+		:) & 443 & {\tt <user> :d :d :d :d :d wish jocelyn had a twitter . \#kudos for her too . } & Hashtag, emoticons \\\hline
+		:) & 468 & {\tt retweet if you was born in the 90 ' s ! \#90's babies } & Grammar mistake\\\hline
+		:( & 14 & {\tt <user> i'm white . \#aw } & Appear neutral to human \\\hline
+		:( & 99594 & {\tt <user> <user> <user> they're there tonight ! ! ! } & Does appear positive negative to human \\\hline
+	\end{tabular}
+	\caption{Examples of tweets in the small dataset}
+	\label{tab:tweet-sexample}
+\end{table*}
+
+This paragraph describes the data being studied.
+Tweets are short messages no longer than 140 characters long \cite{twitter}.
+The table \ref{tab:tweet-sexample} represents a few examples from the small dataset.
+Being considered an informal way of communication, tweets often contain misspelled words and letter repetitions, grammatical and other writing mistakes.
+Besides plain text with punctuation, tweets also contain hashtags, two types of tags, {\em user} and {\em url}, which are tokens for replaced user mentions and URL links, respectively.
+In addition, tweets sometimes contain emoticons.
+Despite the fact that objects in the training dataset mostly comply with its classes, some tweets cannot be determined as positive/negative even by a human (appear neutral).
+Moreover, some of the tweets are clearly mislabeled in the training data.
+Dataset contains repeating tweets.
 \begin{enumerate}
 \item Dataset and loss
 \item State of the art description

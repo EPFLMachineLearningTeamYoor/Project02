@@ -3,6 +3,7 @@
 \usepackage{hyperref}
 \usepackage{graphicx}	% For figure environment
 \usepackage{authblk}
+\usepackage{tabularx}
 
 \title{Project 2 on Machine Learning\\Text classification\\Team Yoor}
 
@@ -27,7 +28,7 @@ This way, each of $N=N_1+N_2=2500000$ tweets is assigned to one of the classes $
 The task is to minimize the classification error.
 In other words, if $\mathcal{D}=\{(x_n, y_n)\}_{n=1}^N$ is the dataset with tweets $x_i\in\Sigma^*$ being messages and $y_n\in \mathcal{C}$ being class labels, the goal is to train a classifier $f\colon\, \Sigma^*\to\mathcal{C}$ which minimizes the loss function $l(y,\hat{y})=[y\neq \hat{y}]$.
 
-The task of sentiment analysis of tweets was thoroughly studied \cite{sota1, sota2}.
+The task of sentiment analysis of tweets was thoroughly studied \cite{sota1, sota2, sota3, sota4}. These solutions usually give accuracy around 80\%.
 Several techniques were applied, mostly consisting of two steps.
 First, the words are converted to dense vectors using Glove, word2vec, cbow or skip-gram models.
 After that, the resulting word vectors are used to construct features for the whole tweet.
@@ -36,20 +37,19 @@ Two latter steps might be replaces with a neural network accepting variable-leng
 Moreover, the embeddings themselves might be trained using backpropagation while training the classifier.
 
 Claim: it is possible to find a model which fits the data better than the current state-of-the-art using expert knowledge on the Tweets dataset.
-\begin{enumerate}
-	\item What is the data (preprocessed tweets \cite{kaggle}) +
-	\item What are we trying to do? Get the best classification score, compared to the state-of-the-art \cite{sota}
-	\item Overview of data, diagrams of features, feature selection, feature augmentation
-	\item Methods and their choice (glove, word2vec, cnn, rnn, cbow, skip-gram) because of the problem statement: classify variable-length arrays of sparse one-hot vectors with local structure (text)
-\end{enumerate}
 
 Next sections describe in details our approaches and compare them to various baselines.
 \section{Models and Methods}
+\newcolumntype{L}[1]{>{\hsize=#1\hsize\raggedright\arraybackslash}X}%
+\newcolumntype{R}[1]{>{\hsize=#1\hsize\raggedleft\arraybackslash}X}%
+\newcolumntype{C}[1]{>{\hsize=#1\hsize\centering\arraybackslash}X}%
+
 \begin{table*}[htbp]
 	\centering
-	\begin{tabular}[c]{|l|l|l|l|}
+	\small
+	\begin{tabularx}{\textwidth}{| L{0.1} | L{0.1} | L{1} | C{1} |}
 		\hline
-		Class&Id&Message&Comment\\
+		Class&Row&Message&Comment\\
 		\hline
 		:( & 171 & {\tt <user> 5k i could cry i'm so unfit !} & User tag\\\hline
 		:( & 99804 & {\tt if i feel like this tomorrow i'm going to the er } & Contraction, missed comma\\\hline
@@ -58,8 +58,8 @@ Next sections describe in details our approaches and compare them to various bas
 		:) & 443 & {\tt <user> :d :d :d :d :d wish jocelyn had a twitter . \#kudos for her too . } & Hashtag, emoticons \\\hline
 		:) & 468 & {\tt retweet if you was born in the 90 ' s ! \#90's babies } & Grammar mistake\\\hline
 		:( & 14 & {\tt <user> i'm white . \#aw } & Appear neutral to human \\\hline
-		:( & 99594 & {\tt <user> <user> <user> they're there tonight ! ! ! } & Does appear positive negative to human \\\hline
-	\end{tabular}
+		:( & 99594 & {\tt <user> <user> <user> they're there tonight ! ! ! } & Does appear positive or negative to human \\\hline
+	\end{tabularx}
 	\caption{Examples of tweets in the small dataset}
 	\label{tab:tweet-sexample}
 \end{table*}
@@ -73,15 +73,12 @@ In addition, tweets sometimes contain emoticons.
 Despite the fact that objects in the training dataset mostly comply with its classes, some tweets cannot be determined as positive/negative even by a human (appear neutral).
 Moreover, some of the tweets are clearly mislabeled in the training data.
 Dataset contains repeating tweets.
-\begin{enumerate}
-\item Dataset and loss
-\item State of the art description
-\item Baseline: glove.
-\item Preprocessing: stemming, word variants, hashtag removing, ...
-\item Word2Vec
-\item CNN
-\item RNN
-\end{enumerate}
+
+First, data was preprocessed by ... {\bf Omar part}
+
+A several models were considered. First, the baseline was the GloVe \cite{glove} model, which is considers training embeddings on the co-occurence matrix. Unfortunately, the model did train quite slow on the dataset gave meaningless embeddings (closest words for a given word did not correspond to it in meaning). Therefore, it was not considered.
+
+Secondly, a word count model was considered as a replacement. Here, a tweet is represented by a high-dimension sparse vector, each item corresponds to a number of occurences of this word in the tweet. This vector was further classified using several techniques, such as SVM and Neural Network. This method gave higher accuracy and allowed for tweaking its parameters with relatively small training time (a Google Cloud instance with 8 CPU was used)
 \section{Results}
 The following models were considered: {\em aba, caba}, the best one is {\em aba} This (does not) correspond to already conducted experiments [99, 98, 97]. Our contribution consists of running {\em method} with {\em xxx} modified with {\em yyy} and this does (not) give an improvement of 0.01231\%
 \section{Discussion}
@@ -93,6 +90,9 @@ We have shown that it is possible to predict tweets using {\em aba} better than 
 	\bibitem{twitter} \href{http://twitter.com}{Twitter}
 	\bibitem{sota1} Go, Alec, Lei Huang, and Richa Bhayani. "Twitter sentiment analysis." Entropy 17 (2009): 252.
 	\bibitem{sota2} Kouloumpis, Efthymios, Theresa Wilson, and Johanna D. Moore. "Twitter sentiment analysis: The good the bad and the omg!." Icwsm 11.538-541 (2011): 164.
+	\bibitem{sota3} Tapan Sahni, Chinmay Chandak, Naveen Reddy, Manish Singh. "Efficient Twitter Sentiment Classification using Subjective Distant Supervision"
+	\bibitem{sota4} Alec Go, Richa Bhayani,	Lei Huang. "Twitter Sentiment Classification using Distant Supervision"
+	\bibitem{glove} Jeffrey Pennington, Richard Socher, Christopher D. Manning. "GloVe: Global Vectors for Word Representation"
 	\bibitem{kaggle} \href{https://www.kaggle.com/c/epfml17-text/data}{Competition} and data downloads on kaggle.com
 \end{thebibliography}
 \end{document}

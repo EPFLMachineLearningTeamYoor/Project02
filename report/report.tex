@@ -74,7 +74,52 @@ Despite the fact that objects in the training dataset mostly comply with its cla
 Moreover, some of the tweets are clearly mislabeled in the training data.
 Dataset contains repeating tweets.
 
-First, data was preprocessed by ... {\bf Omar part}
+Representation of tweets was through the occurency matrix, where each row corresponds to a tweet , each column corresponds to a term in the vocabullary and each cell corresponds to the number of times this word occurrs in this tweet. Through preprocessing the aim is to maximise the knowledge that can be extracted from the datasets in order to build this matrix.  Hence th focus was on increasing the occurence of words through correction of misspelled words and stemming techniques.
+
+Usually tweeters repeat a letter in a word to stress on a certain emotion , as an example : "i am soooooo angryyyy".This problem was tackled by two approaches.
+The first approach is called stemming.A formal definition of stemming : is the process by which we find the origin of the word. Linguistically any word can be changed to different forms by either adding afixes or prefixes, thus one word can have multiple forms, all corresponding to the same origin.Through stemming, the aim is to minimise the presence of these different forms and replacing them with the original stem. Algorithm
+We do this by replacing every repeated letter by two instances of that letter.We check if the word is valid (contained in a dictionary) if it is the case then we found the correct form of the word, otherwise we reccurr on the new word.Our end result is a set of tweets with most of the words having repeated characters replaced by their stems.
+
+\begin{figure}[!htb]
+	\centering \includegraphics[height=100px,width=100px]{../plots/distributionA.png}
+	\caption{Exploratory data analysis using charts}
+	\label{fig:data}
+\end{figure}
+
+The second approach adopted is misspelling correction. The process goes as follows : a token in the tweet is proposed to an english dictionary, the dictionary responds by either indicating that the word is valid or not. This dictionary provides the most relevant suggestions to correct this word. As a metric to modify a word , the levenshtein distance was use.Levenshtein distance is defined as : "the distance between two strings is the minimal number of insertions, deletions, and substitutions of one character for another that will transform one string into the other". Thus to explore how many misspelled-wrong words are in the dataset , we ploted the distribution in Fig []. All most of the data correction is covered by setting our levensteihn threshold to 4.
+
+\begin{figure}[!htb]
+	\centering \includegraphics[width=200px]{../plots/raw.png}
+	\caption{Exploratory data analysis using charts}
+	\label{fig:data}
+\end{figure}
+
+The metric used to compare both methods was prediction accuracy of logistic regression. As a first step the combined dataset of both the positive and negative tweets was exposed to stemming and correction. Then for each method a vocabullary of words is constructed. Finally, the occurrence matrix is built from both the tweets and the dictionary. K-fold is used to split the matrix and then logistic regression is run using the occurrence matrix as the data matrix, labels are split into 0 denoting positive sentiment and 1 denoting, a negative sentiment.  As observed in figure x , the spelling correction method is superficial to the stemming method with reaching a maximum of 78.6 % prediction accuraccy.
+
+
+\begin{figure}[!htb]
+	\centering \includegraphics[width=200px]{../plots/redundant.png}
+	\caption{Exploratory data analysis using charts}
+	\label{fig:data}
+\end{figure}
+
+Another property observed in the dataset is the presence of redundant tweets. To view their impact ,repeated instances of a tweet are eliminated and the newly formed unique dataset is exposed to the previous methods. And as observed once again the correction spelling method overpowers the stemming technique. Although with very small improvement in accuracy prediction (78.88%).
+
+\begin{figure}[!htb]
+	\centering \includegraphics[width=200px]{../plots/distributionB.png}
+	\caption{Exploratory data analysis using charts}
+	\label{fig:data}
+\end{figure}
+
+According to fig ,we can observe that many tokens in our datasets start with non alpahbetic characters. Those tokens were eliminated from the previous experiments as all dictionaries cann't recognize non alphanumeric words. Thus  a new set of tweets was constructed having all tokens that contain characters, but start with a non-alphabetic character to be stripped of that character or characters.AS before, the distribution of levensteihn distances for suggested words was plotted,which results in a more uniform distribution. It is suspected that this is due to the informal language used in hashtags. 
+\begin{figure}[!htb]
+	\centering \includegraphics[width=200px]{../plots/filtered_text.png}
+	\caption{Exploratory data analysis using charts}
+	\label{fig:data}
+\end{figure}
+The newly constructed dataset is aplied to previous methdods .Eliminating redundant tweets , since as observed this gave us a slight improvement. Then the dataset is exposed it to stemming and misspelling correction. Accuracy prediction then improves to 0.802 , the best score ever reached.
+
+Now with the optimal model having intial nonalphabetic characters removed , redundant tweets eliminated and misspelling correction applied with levensteihn threshold set to 5.The dataset is tackled from a different angle,the effect of the frequency of which one token appears in the document is explored. Thus two approaches are considered : removing most frequent tokens that are common in both datasets and removing nonfrequent words from the vocabullary. The results of the first experiment came as a surpise.As suspected that common words would make it harder for the classifier to distinguish between a positive sentiment tweet and a negative one.A reasoning for that is a due to the limited number of characters provided to users to express themselves and thus most of the tweet gets distributed among tagging other users,using punctuation and stopwords to express feelings.Also eliminating non frequent tokens from our vocabullary has helped improving accuracy , as observed in fig.    
 
 A several models were considered. First, the baseline was the GloVe \cite{glove} model, which is considers training embeddings on the co-occurence matrix. Unfortunately, the model did train quite slow on the dataset gave meaningless embeddings (closest words for a given word did not correspond to it in meaning). Therefore, it was not considered.
 

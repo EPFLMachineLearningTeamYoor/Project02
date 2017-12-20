@@ -24,3 +24,9 @@ clean_train_neg.txt : file having negative processed tweets
 clean_train_vocab_neg.txt : file having vocabullary used to train model
 
 Please make sure when loading the vocabullary to combine them and keep unique set of them 
+
+# Frequency :
+this file generates a clean vocabullary that can be used in the count matrix:
+1) Loading data (all blocks)
+2) Threshold (all blocks)
+3) Clean vocab generation (all blocks)

@@ -167,23 +167,23 @@ Note that, the number of filters for convolutional layers, the size of the filte
 \section{Results}
 \begin{table}[ht]
 	\centering
-	\tiny
+	\small
 	\begin{tabular}{|c | c |  c | c | c |} 
 		\hline
 		Model & Dataset & Train acc. & Val. acc. & L2 \\
 		\hline
-		GloVe FC & 0 & 0 & 0 & \\
+		GloVe FC & Full & 0.62 & 0.62 & $10^{-6}$\\
 		\hline
 		WC LR & Partial & 0.86 & 0.81 & 1000, not tuned\\
 		\hline
 		WC LR & Full & 0.86 & 0.83 & 1000, not tuned\\
 		\hline
-		WC FC 100x50 & Full & 0.86 & 0.83 & 1000, not tuned\\
+		WC FC 100x50 & Full & {\bf 0.87} & {\bf 0.86} & 1000, not tuned\\
 		\hline
 		WC FC 100x50 & Full, clean & 0.82 & 0.83 & 1\\ [1ex] 
 		\hline
 	\end{tabular}
-	\caption{Comparison of different methods (WC=Word Count, GloVe~-- pretrained GloVe vectors, LR~-- Logistic Regression)}
+	\caption{Comparison of different methods (WC=Word Count, GloVe~-- pretrained GloVe vectors, LR~-- Logistic Regression, FC~-- fully-connected, WC~-- word count)}
 	\label{tab:results}
 \end{table}
 

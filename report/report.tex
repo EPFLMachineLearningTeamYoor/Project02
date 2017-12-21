@@ -134,21 +134,24 @@ This method gave higher accuracy and allowed for tweaking its parameters with re
 \section{Results}
 \begin{table}[ht]
 	\centering
+	\tiny
 	\begin{tabular}{|c | c |  c | c | c |} 
 		\hline
-		Model & Dataset & Train accuracy & Validation accuracy & L2 \\ [0.5ex] 
+		Model & Dataset & Train acc. & Val. acc. & L2 \\
 		\hline
-		GloVe RNN & 6 & 87837 & 787  \\ 
+		GloVe RNN & 0 & 0 & 0 &   \\ 
 		\hline
-		GloVe CNN & 7 & 78 & 5415 \\
+		GloVe CNN & 0 & 0 & 0 &  \\
 		\hline
-		GloVe FC & 545 & 778 & 7507 \\
+		GloVe FC & 0 & 0 & 0 & \\
 		\hline
-		WC LR & Partial & 0.86 & 0.81 & 1000 (not tuned) \\
+		WC LR & Partial & 0.86 & 0.81 & 1000, not tuned\\
 		\hline
-		WC LR & Full & 0.86 & 0.83 & 1000 (not tuned) \\
+		WC LR & Full & 0.86 & 0.83 & 1000, not tuned\\
 		\hline
-		WC LR & 88 & 788 & 6344 \\ [1ex] 
+		WC FC 100x50 & Full & 0.86 & 0.83 & 1000, not tuned\\
+		\hline
+		WC FC 100x50 & Full, clean & 0 & 0 & 1\\ [1ex] 
 		\hline
 	\end{tabular}
 	\caption{Comparison of different methods (WC=Word Count, GloVe~-- pretrained GloVe vectors, LR~-- Logistic Regression)}

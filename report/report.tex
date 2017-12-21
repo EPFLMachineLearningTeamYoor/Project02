@@ -4,6 +4,7 @@
 \usepackage{graphicx}	% For figure environment
 \usepackage{authblk}
 \usepackage{tabularx}
+\usepackage{float}
 
 \title{Project 2 on Machine Learning\\Text classification\\Team Yoor}
 
@@ -47,18 +48,18 @@ Next sections describe in details our approaches and compare them to various bas
 \begin{table*}[htbp]
 	\centering
 	\small
-	\begin{tabularx}{\textwidth}{| L{0.1} | L{0.1} | L{1} | C{1} |}
+	\begin{tabularx}{\textwidth}{| L{0.1} | L{0.05} | L{0.7} | L{0.2} | }
 		\hline
 		Class&Row&Message&Comment\\
 		\hline
-		:( & 171 & {\tt <user> 5k i could cry i'm so unfit !} & User tag\\\hline
+		:( & 171 & {\tt <user> 5k i could cry i'm so unfit !} & User tag \\\hline
 		:( & 99804 & {\tt if i feel like this tomorrow i'm going to the er } & Contraction, missed comma\\\hline
 		:) & 524 & {\tt its the weekend ! ! <user> s coming home anddd <user> s baby shower , exciteddd } & Letter repetitions\\\hline
 		:) & 99615 & {\tt <user> aren't you just an adorable granny <url> } & URL tag\\\hline
 		:) & 443 & {\tt <user> :d :d :d :d :d wish jocelyn had a twitter . \#kudos for her too . } & Hashtag, emoticons \\\hline
-		:) & 468 & {\tt retweet if you was born in the 90 ' s ! \#90's babies } & Grammar mistake\\\hline
-		:( & 14 & {\tt <user> i'm white . \#aw } & Appear neutral to human \\\hline
-		:( & 99594 & {\tt <user> <user> <user> they're there tonight ! ! ! } & Does appear positive or negative to human \\\hline
+		:) & 468 & {\tt retweet if you was born in the 90 ' s ! \#90's babies } & Grammar\\\hline
+		:( & 14 & {\tt <user> i'm white . \#aw } & Appear neutral \\\hline
+		:( & 99594 & {\tt <user> <user> <user> they're there tonight ! ! ! } & Appear positive \\\hline
 	\end{tabularx}
 	\caption{Examples of tweets in the small dataset}
 	\label{tab:tweet-sexample}
@@ -121,11 +122,43 @@ The newly constructed dataset is aplied to previous methdods .Eliminating redund
 
 Now with the optimal model having intial nonalphabetic characters removed , redundant tweets eliminated and misspelling correction applied with levensteihn threshold set to 5.The dataset is tackled from a different angle,the effect of the frequency of which one token appears in the document is explored. Thus two approaches are considered : removing most frequent tokens that are common in both datasets and removing nonfrequent words from the vocabullary. The results of the first experiment came as a surpise.As suspected that common words would make it harder for the classifier to distinguish between a positive sentiment tweet and a negative one.A reasoning for that is a due to the limited number of characters provided to users to express themselves and thus most of the tweet gets distributed among tagging other users,using punctuation and stopwords to express feelings.Also eliminating non frequent tokens from our vocabullary has helped improving accuracy , as observed in fig.    
 
-A several models were considered. First, the baseline was the GloVe \cite{glove} model, which is considers training embeddings on the co-occurence matrix. Unfortunately, the model did train quite slow on the dataset gave meaningless embeddings (closest words for a given word did not correspond to it in meaning). Therefore, it was not considered.
+A several models were considered.
+First, the baseline was the GloVe \cite{glove} model, which is considers training embeddings on the co-occurence matrix.
+Unfortunately, the model did train quite slow on the dataset gave meaningless embeddings (closest words for a given word did not correspond to it in meaning).
+Therefore, it was not considered.
 
-Secondly, a word count model was considered as a replacement. Here, a tweet is represented by a high-dimension sparse vector, each item corresponds to a number of occurences of this word in the tweet. This vector was further classified using several techniques, such as SVM and Neural Network. This method gave higher accuracy and allowed for tweaking its parameters with relatively small training time (a Google Cloud instance with 8 CPU was used)
+Secondly, a word count model was considered as a replacement.
+Here, a tweet is represented by a high-dimension sparse vector, each item corresponds to a number of occurences of this word in the tweet.
+This vector was further classified using several techniques, such as SVM and Neural Network.
+This method gave higher accuracy and allowed for tweaking its parameters with relatively small training time (a Google Cloud instance with 8 CPU was used)
 \section{Results}
-The following models were considered: {\em aba, caba}, the best one is {\em aba} This (does not) correspond to already conducted experiments [99, 98, 97]. Our contribution consists of running {\em method} with {\em xxx} modified with {\em yyy} and this does (not) give an improvement of 0.01231\%
+\begin{table}[ht]
+	\centering
+	\tiny
+	\begin{tabular}{|c | c |  c | c | c |} 
+		\hline
+		Model & Dataset & Train acc. & Val. acc. & L2 \\
+		\hline
+		GloVe RNN & 0 & 0 & 0 &   \\ 
+		\hline
+		GloVe CNN & 0 & 0 & 0 &  \\
+		\hline
+		GloVe FC & 0 & 0 & 0 & \\
+		\hline
+		WC LR & Partial & 0.86 & 0.81 & 1000, not tuned\\
+		\hline
+		WC LR & Full & 0.86 & 0.83 & 1000, not tuned\\
+		\hline
+		WC FC 100x50 & Full & 0.86 & 0.83 & 1000, not tuned\\
+		\hline
+		WC FC 100x50 & Full, clean & 0 & 0 & 1\\ [1ex] 
+		\hline
+	\end{tabular}
+	\caption{Comparison of different methods (WC=Word Count, GloVe~-- pretrained GloVe vectors, LR~-- Logistic Regression)}
+	\label{tab:results}
+\end{table}
+
+The following models were considered: CNN, RNN, Logistic Regression, Fully Connected Neural Network. The best model demonstrated This (does not) correspond to already conducted experiments [99, 98, 97]. Our contribution consists of running {\em method} with {\em xxx} modified with {\em yyy} and this does (not) give an improvement of 0.01231\%
 \section{Discussion}
 Our experiments lack {\em zzz}, which can be improved by doing also {\em ttt}
 \section{Summary}

@@ -41,6 +41,7 @@ Claim: it is possible to find a model which fits the data better than the curren
 
 Next sections describe in details our approaches and compare them to various baselines.
 \section{Models and Methods}
+\subsection{Data cleaning}
 \newcolumntype{L}[1]{>{\hsize=#1\hsize\raggedright\arraybackslash}X}%
 \newcolumntype{R}[1]{>{\hsize=#1\hsize\raggedleft\arraybackslash}X}%
 \newcolumntype{C}[1]{>{\hsize=#1\hsize\centering\arraybackslash}X}%
@@ -120,8 +121,9 @@ According to fig ,we can observe that many tokens in our datasets start with non
 \end{figure}
 The newly constructed dataset is aplied to previous methdods .Eliminating redundant tweets , since as observed this gave us a slight improvement. Then the dataset is exposed it to stemming and misspelling correction. Accuracy prediction then improves to 0.802 , the best score ever reached.
 
-Now with the optimal model having intial nonalphabetic characters removed , redundant tweets eliminated and misspelling correction applied with levensteihn threshold set to 5.The dataset is tackled from a different angle,the effect of the frequency of which one token appears in the document is explored. Thus two approaches are considered : removing most frequent tokens that are common in both datasets and removing nonfrequent words from the vocabullary. The results of the first experiment came as a surpise.As suspected that common words would make it harder for the classifier to distinguish between a positive sentiment tweet and a negative one.A reasoning for that is a due to the limited number of characters provided to users to express themselves and thus most of the tweet gets distributed among tagging other users,using punctuation and stopwords to express feelings.Also eliminating non frequent tokens from our vocabullary has helped improving accuracy , as observed in fig.    
+Now with the optimal model having intial nonalphabetic characters removed , redundant tweets eliminated and misspelling correction applied with levensteihn threshold set to 5.The dataset is tackled from a different angle,the effect of the frequency of which one token appears in the document is explored. Thus two approaches are considered : removing most frequent tokens that are common in both datasets and removing nonfrequent words from the vocabullary. The results of the first experiment came as a surpise.As suspected that common words would make it harder for the classifier to distinguish between a positive sentiment tweet and a negative one.A reasoning for that is a due to the limited number of characters provided to users to express themselves and thus most of the tweet gets distributed among tagging other users,using punctuation and stopwords to express feelings.Also eliminating non frequent tokens from our vocabullary has helped improving accuracy , as observed in fig.
 
+\subsection{Prediction models}
 A several models were considered.
 First, the baseline was the GloVe \cite{glove} model, which is considers training embeddings on the co-occurence matrix.
 Unfortunately, the model did train quite slow on the dataset gave meaningless embeddings (closest words for a given word did not correspond to it in meaning).
@@ -131,6 +133,23 @@ Secondly, a word count model was considered as a replacement.
 Here, a tweet is represented by a high-dimension sparse vector, each item corresponds to a number of occurences of this word in the tweet.
 This vector was further classified using several techniques, such as SVM and Neural Network.
 This method gave higher accuracy and allowed for tweaking its parameters with relatively small training time (a Google Cloud instance with 8 CPU was used)
+\vspace{5mm} %5mm vertical space
+\subsubsection{Convolutional neural networks (CNN)}
+
+
+One of the method that we tried for tweet classification is convolutional neural networks. Convolutional neural network is a type of a neural network, which includes a special layer called convolutional layer for capturing the features of input data. It has been proposed for image processing firstly because convolutional layers are very convenient tools to capture the content and features of images. However, it has a very wide application area ranging from image and video processing to natural language processing \cite{cnn1}.
+
+
+The basic block of CNN consists of a convolutional layer, an activation function and preferably a pooling layer, which is going to be called convolutional block in this content. The first important element in convolutional block is convolutional layer. Basically, it creates a set of activation maps using a set of filters each of them has a certain size (kernel width and height). The type of the convolution is fully dependent on application (1D,2D,3D or 4D). After creating a set of activation maps (feature maps), we apply an activation function to normalize our feature maps for squashing the unbounded linearly weighted sum from neurons and break the linearity of a convolutional neural network. There are various activation functions for different purposes. After applying an activation function, preferably, convolutional block applies a pooling layer in order to reduce the amount of parameters and computation in the network, and hence to also control overfitting. This layer simply down sample the feature maps for increasing the efficiency of computation. It is important to note that pooling layer is a controversial topic and there are many opinions in favor of not to use pooling layer [9]. Convolutional blocks are applied in sequential fashion and a fully connected layer (dense layer) is placed at the end of the CNN in order to show what our network has learned in other words fully connected layer predicts an output from the learning. The coefficients of the filters and the weights of output layer are regulated thanks to back propagation mechanism \cite{cnn1}  \cite{cnn3} \cite{cnn4}.
+\begin{figure}[!htb]
+	\centering \includegraphics[width=200px]{../plots/cnn}
+	\caption{Our general structure of convolutional neural network}
+	\label{fig:data}
+\end{figure}
+
+Fig.6 shows the general structure of our model. We simply concatenate convolutional layers in sequential fashion. Note that we used 1D convolutional layers because our words are represented as a vector form. We did not use any pooling layer between convolutional layers because it is not fundamental to reduce dimension in this context. We also applied dropout layers before output layer as usual and between convolutional layers \cite{cnn5}in order to prevent overfitting. For hidden layers, elu is used, for first two elements of output layer tanh activation function is used and for the last element of output layer, softmax activation function is used in favor of common practice \cite{cnn6}.
+Note that, the number of filters for convolutional layers, the size of the filters, activation function types regarding the type of the layer, dropout amount and the number of convolutional layers are just a subset of complete hyper parameters of this model that can be regulated in order to search optimum model.
+
 \section{Results}
 \begin{table}[ht]
 	\centering
@@ -164,13 +183,21 @@ Our experiments lack {\em zzz}, which can be improved by doing also {\em ttt}
 \section{Summary}
 We have shown that it is possible to predict tweets using {\em aba} better than state-of-the-art.
 
+
+
 \begin{thebibliography}{99}
+
 	\bibitem{twitter} \href{http://twitter.com}{Twitter}
 	\bibitem{sota1} Go, Alec, Lei Huang, and Richa Bhayani. "Twitter sentiment analysis." Entropy 17 (2009): 252.
 	\bibitem{sota2} Kouloumpis, Efthymios, Theresa Wilson, and Johanna D. Moore. "Twitter sentiment analysis: The good the bad and the omg!." Icwsm 11.538-541 (2011): 164.
 	\bibitem{sota3} Tapan Sahni, Chinmay Chandak, Naveen Reddy, Manish Singh. "Efficient Twitter Sentiment Classification using Subjective Distant Supervision"
 	\bibitem{sota4} Alec Go, Richa Bhayani,	Lei Huang. "Twitter Sentiment Classification using Distant Supervision"
 	\bibitem{glove} Jeffrey Pennington, Richard Socher, Christopher D. Manning. "GloVe: Global Vectors for Word Representation"
-	\bibitem{kaggle} \href{https://www.kaggle.com/c/epfml17-text/data}{Competition} and data downloads on kaggle.com
+	\bibitem{cnn1}  Kim, Y. (2014). "Convolutional neural networks for sentence classification." arXiv preprint arXiv:1408.5882.
+	\bibitem{cnn2} Springenberg, J. T., Dosovitskiy, A., Brox, T., and Riedmiller, M. (2014). "Striving for simplicity: The all convolutional net." arXiv preprint arXiv 1412.6806.
+	\bibitem{cnn3} Collobert, R., Weston, J., Bottou, L., Karlen, M., Kavukcuoglu, K., and Kuksa, P. (2011). Natural language processing (almost) from scratch. Journal of Machine Learning Research, 12(Aug), 2493-2537.
+	\bibitem{cnn4} http://cs231n.github.io/convolutional-networks/{\#}norm
+	\bibitem{cnn5} Park, S., and Kwak, N. (2016, November). "Analysis on the Dropout Effect in Convolutional Neural Networks." In Asian Conference on Computer Vision (pp. 189-204). Springer, Cham.
+	\bibitem{cnn6} http://cs231n.github.io/neural-networks-1/{\#}actfun
 \end{thebibliography}
 \end{document}

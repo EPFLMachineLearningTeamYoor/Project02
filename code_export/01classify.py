@@ -21,6 +21,7 @@ from keras.regularizers import l2
 
 # parameters
 random_state = 42
+min_word_frequency = 100
 
 # get all unique tokens in file
 def get_words(filename):
@@ -114,7 +115,7 @@ def get_dataset(tweets_pos, tweets_neg, count_threshold = 100):
     return vocab, reverse_dictionary, X, Y
 
 # get full dataset
-vocab_full, rev_full, X_full, Y_full = get_dataset('../tmp/clean_train_pos.txt', '../tmp/clean_train_neg.txt', min_word_frequency)
+vocab_full, rev_full, X_full, Y_full = get_dataset('data/clean_train_pos.txt', 'data/clean_train_neg.txt', min_word_frequency)
 vocab, reverse_dictionary, X, Y = vocab_full, rev_full, X_full, Y_full
 
 # plot word length distribution
@@ -125,6 +126,7 @@ def plot_word_count_hist(vocab):
 #plot_word_count_hist(vocab)
 
 # split to train/val
+test_size_percent = 0.01
 x, x_val, y, y_val = train_test_split(X, Y, test_size=test_size_percent, random_state=random_state)
 
 y = np.array(y).reshape(-1, 1)
@@ -147,9 +149,7 @@ def batch_generator(X, y, batch_size, number_of_batches):
             counter = 0
 
 # training parameters
-test_size_percent = 0.01
 hidden_layers = (200, 50, 20)
-min_word_frequency = 100
 
 model = Sequential()
 

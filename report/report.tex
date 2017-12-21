@@ -6,6 +6,7 @@
 \usepackage{tabularx}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{float}
 
 \title{Project 2 on Machine Learning\\Text classification\\Team Yoor}
 
@@ -42,6 +43,7 @@ Claim: it is possible to find a model which fits the data better than the curren
 
 Next sections describe in details our approaches and compare them to various baselines.
 \section{Models and Methods}
+\subsection{Data cleaning}
 \newcolumntype{L}[1]{>{\hsize=#1\hsize\raggedright\arraybackslash}X}%
 \newcolumntype{R}[1]{>{\hsize=#1\hsize\raggedleft\arraybackslash}X}%
 \newcolumntype{C}[1]{>{\hsize=#1\hsize\centering\arraybackslash}X}%
@@ -49,18 +51,18 @@ Next sections describe in details our approaches and compare them to various bas
 \begin{table*}[htbp]
 	\centering
 	\small
-	\begin{tabularx}{\textwidth}{| L{0.1} | L{0.1} | L{1} | C{1} |}
+	\begin{tabularx}{\textwidth}{| L{0.1} | L{0.05} | L{0.7} | L{0.2} | }
 		\hline
 		Class&Row&Message&Comment\\
 		\hline
-		:( & 171 & {\tt <user> 5k i could cry i'm so unfit !} & User tag\\\hline
+		:( & 171 & {\tt <user> 5k i could cry i'm so unfit !} & User tag \\\hline
 		:( & 99804 & {\tt if i feel like this tomorrow i'm going to the er } & Contraction, missed comma\\\hline
 		:) & 524 & {\tt its the weekend ! ! <user> s coming home anddd <user> s baby shower , exciteddd } & Letter repetitions\\\hline
 		:) & 99615 & {\tt <user> aren't you just an adorable granny <url> } & URL tag\\\hline
 		:) & 443 & {\tt <user> :d :d :d :d :d wish jocelyn had a twitter . \#kudos for her too . } & Hashtag, emoticons \\\hline
-		:) & 468 & {\tt retweet if you was born in the 90 ' s ! \#90's babies } & Grammar mistake\\\hline
-		:( & 14 & {\tt <user> i'm white . \#aw } & Appear neutral to human \\\hline
-		:( & 99594 & {\tt <user> <user> <user> they're there tonight ! ! ! } & Does appear positive or negative to human \\\hline
+		:) & 468 & {\tt retweet if you was born in the 90 ' s ! \#90's babies } & Grammar\\\hline
+		:( & 14 & {\tt <user> i'm white . \#aw } & Appear neutral \\\hline
+		:( & 99594 & {\tt <user> <user> <user> they're there tonight ! ! ! } & Appear positive \\\hline
 	\end{tabularx}
 	\caption{Examples of tweets in the small dataset}
 	\label{tab:tweet-sexample}
@@ -147,23 +149,81 @@ The newly constructed dataset is subject to previous methdods .Elimination of re
 \end{figure}
 Now with the optimal model having intial nonalphabetic characters removed , redundant tweets eliminated and misspelling correction applied with levensteihn threshold set to 5.The dataset is tackled from a different angle,the effect of the frequency of which one token appears in the document is explored. Thus two approaches are considered : removing most frequent tokens that are common in both datasets and removing nonfrequent words from the combined vocabullary set. The results of the first experiment came as a surpise, since we suspected that elimination of common words would make it easier for the classifier to distinguish between a positive sentiment tweet and a negative one.A reasoning contributed for such results is the limited number of characters provided for users to express themselves and thus most of the tweet content gets distributed among tagging other users,using punctuation and stopwords.The second approach was of more relevance, wehere elimination of non frequent tokens from the vocabullary has helped improving accuracy to 78 \%, as observed in Fig[\ref{freq}].    
 
-A several models were considered. First, the baseline was the GloVe \cite{glove} model, which is considers training embeddings on the co-occurence matrix. Unfortunately, the model did train quite slow on the dataset gave meaningless embeddings (closest words for a given word did not correspond to it in meaning). Therefore, it was not considered.
+\subsection{Prediction models}
+A several models were considered.
+First, the baseline was the GloVe \cite{glove} model, which is considers training embeddings on the co-occurence matrix.
+Unfortunately, the model did train quite slow on the dataset gave meaningless embeddings (closest words for a given word did not correspond to it in meaning).
+Therefore, it was not considered.
 
-Secondly, a word count model was considered as a replacement. Here, a tweet is represented by a high-dimension sparse vector, each item corresponds to a number of occurences of this word in the tweet. This vector was further classified using several techniques, such as SVM and Neural Network. This method gave higher accuracy and allowed for tweaking its parameters with relatively small training time (a Google Cloud instance with 8 CPU was used)
+Secondly, a word count model was considered as a replacement.
+Here, a tweet is represented by a high-dimension sparse vector, each item corresponds to a number of occurences of this word in the tweet.
+This vector was further classified using several techniques, such as SVM and Neural Network.
+This method gave higher accuracy and allowed for tweaking its parameters with relatively small training time (a Google Cloud instance with 8 CPU was used)
+\vspace{5mm} %5mm vertical space
+\subsubsection{Convolutional neural networks (CNN)}
+
+
+One of the method that we tried for tweet classification is convolutional neural networks. Convolutional neural network is a type of a neural network, which includes a special layer called convolutional layer for capturing the features of input data. It has been proposed for image processing firstly because convolutional layers are very convenient tools to capture the content and features of images. However, it has a very wide application area ranging from image and video processing to natural language processing \cite{cnn1}.
+
+
+The basic block of CNN consists of a convolutional layer, an activation function and preferably a pooling layer, which is going to be called convolutional block in this content. The first important element in convolutional block is convolutional layer. Basically, it creates a set of activation maps using a set of filters each of them has a certain size (kernel width and height). The type of the convolution is fully dependent on application (1D,2D,3D or 4D). After creating a set of activation maps (feature maps), we apply an activation function to normalize our feature maps for squashing the unbounded linearly weighted sum from neurons and break the linearity of a convolutional neural network. There are various activation functions for different purposes. After applying an activation function, preferably, convolutional block applies a pooling layer in order to reduce the amount of parameters and computation in the network, and hence to also control overfitting. This layer simply down sample the feature maps for increasing the efficiency of computation. It is important to note that pooling layer is a controversial topic and there are many opinions in favor of not to use pooling layer [9]. Convolutional blocks are applied in sequential fashion and a fully connected layer (dense layer) is placed at the end of the CNN in order to show what our network has learned in other words fully connected layer predicts an output from the learning. The coefficients of the filters and the weights of output layer are regulated thanks to back propagation mechanism \cite{cnn1}  \cite{cnn3} \cite{cnn4}.
+\begin{figure}[!htb]
+	\centering \includegraphics[width=200px]{../plots/cnn}
+	\caption{Our general structure of convolutional neural network}
+	\label{fig:data}
+\end{figure}
+
+Fig.6 shows the general structure of our model. We simply concatenate convolutional layers in sequential fashion. Note that we used 1D convolutional layers because our words are represented as a vector form. We did not use any pooling layer between convolutional layers because it is not fundamental to reduce dimension in this context. We also applied dropout layers before output layer as usual and between convolutional layers \cite{cnn5}in order to prevent overfitting. For hidden layers, elu is used, for first two elements of output layer tanh activation function is used and for the last element of output layer, softmax activation function is used in favor of common practice \cite{cnn6}.
+Note that, the number of filters for convolutional layers, the size of the filters, activation function types regarding the type of the layer, dropout amount and the number of convolutional layers are just a subset of complete hyper parameters of this model that can be regulated in order to search optimum model.
+
 \section{Results}
-The following models were considered: {\em aba, caba}, the best one is {\em aba} This (does not) correspond to already conducted experiments [99, 98, 97]. Our contribution consists of running {\em method} with {\em xxx} modified with {\em yyy} and this does (not) give an improvement of 0.01231\%
+\begin{table}[ht]
+	\centering
+	\tiny
+	\begin{tabular}{|c | c |  c | c | c |} 
+		\hline
+		Model & Dataset & Train acc. & Val. acc. & L2 \\
+		\hline
+		GloVe RNN & 0 & 0 & 0 &   \\ 
+		\hline
+		GloVe CNN & 0 & 0 & 0 &  \\
+		\hline
+		GloVe FC & 0 & 0 & 0 & \\
+		\hline
+		WC LR & Partial & 0.86 & 0.81 & 1000, not tuned\\
+		\hline
+		WC LR & Full & 0.86 & 0.83 & 1000, not tuned\\
+		\hline
+		WC FC 100x50 & Full & 0.86 & 0.83 & 1000, not tuned\\
+		\hline
+		WC FC 100x50 & Full, clean & 0 & 0 & 1\\ [1ex] 
+		\hline
+	\end{tabular}
+	\caption{Comparison of different methods (WC=Word Count, GloVe~-- pretrained GloVe vectors, LR~-- Logistic Regression)}
+	\label{tab:results}
+\end{table}
+
+The following models were considered: CNN, RNN, Logistic Regression, Fully Connected Neural Network. The best model demonstrated This (does not) correspond to already conducted experiments [99, 98, 97]. Our contribution consists of running {\em method} with {\em xxx} modified with {\em yyy} and this does (not) give an improvement of 0.01231\%
 \section{Discussion}
 Our experiments lack {\em zzz}, which can be improved by doing also {\em ttt}
 \section{Summary}
 We have shown that it is possible to predict tweets using {\em aba} better than state-of-the-art.
 
+
+
 \begin{thebibliography}{99}
+
 	\bibitem{twitter} \href{http://twitter.com}{Twitter}
 	\bibitem{sota1} Go, Alec, Lei Huang, and Richa Bhayani. "Twitter sentiment analysis." Entropy 17 (2009): 252.
 	\bibitem{sota2} Kouloumpis, Efthymios, Theresa Wilson, and Johanna D. Moore. "Twitter sentiment analysis: The good the bad and the omg!." Icwsm 11.538-541 (2011): 164.
 	\bibitem{sota3} Tapan Sahni, Chinmay Chandak, Naveen Reddy, Manish Singh. "Efficient Twitter Sentiment Classification using Subjective Distant Supervision"
 	\bibitem{sota4} Alec Go, Richa Bhayani,	Lei Huang. "Twitter Sentiment Classification using Distant Supervision"
 	\bibitem{glove} Jeffrey Pennington, Richard Socher, Christopher D. Manning. "GloVe: Global Vectors for Word Representation"
-	\bibitem{kaggle} \href{https://www.kaggle.com/c/epfml17-text/data}{Competition} and data downloads on kaggle.com
+	\bibitem{cnn1}  Kim, Y. (2014). "Convolutional neural networks for sentence classification." arXiv preprint arXiv:1408.5882.
+	\bibitem{cnn2} Springenberg, J. T., Dosovitskiy, A., Brox, T., and Riedmiller, M. (2014). "Striving for simplicity: The all convolutional net." arXiv preprint arXiv 1412.6806.
+	\bibitem{cnn3} Collobert, R., Weston, J., Bottou, L., Karlen, M., Kavukcuoglu, K., and Kuksa, P. (2011). Natural language processing (almost) from scratch. Journal of Machine Learning Research, 12(Aug), 2493-2537.
+	\bibitem{cnn4} http://cs231n.github.io/convolutional-networks/{\#}norm
+	\bibitem{cnn5} Park, S., and Kwak, N. (2016, November). "Analysis on the Dropout Effect in Convolutional Neural Networks." In Asian Conference on Computer Vision (pp. 189-204). Springer, Cham.
+	\bibitem{cnn6} http://cs231n.github.io/neural-networks-1/{\#}actfun
 \end{thebibliography}
 \end{document}

@@ -2,7 +2,7 @@
 Project 2: text classification using most frequent word count
 
 ## Requirements
-The code was tested on a Google Cloud 8 CPU, 30GB RAM, 20G HDD instance. It takes about two hours to run
+The code was tested on a Google Cloud 8 CPU, 30GB RAM, 20G HDD instance running on Debian. It takes about two hours to run
 
 ## INSTALLATION
 (in virtualenv)
@@ -14,7 +14,7 @@ The code was tested on a Google Cloud 8 CPU, 30GB RAM, 20G HDD instance. It take
 ```
 
 ## Run
-1. Copy `test_data.txt`, `train_neg_full.txt` and `train_pos_full.txt` to `data` folder
+1. Copy `test_data.txt`, `train_neg_full.txt` and `train_pos_full.txt` to `data` folder from Kaggle
 2. Run `python run.py` in virtualenv
 
 Will generate a file submission.txt

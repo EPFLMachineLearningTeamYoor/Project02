@@ -1,0 +1,16 @@
+cycler==0.10.0
+Keras==2.1.2
+matplotlib==2.1.1
+nltk==3.2.5
+numpy==1.13.3
+pandas==0.21.1
+pkg-resources==0.0.0
+pyenchant==2.0.0
+pyparsing==2.2.0
+python-dateutil==2.6.1
+pytz==2017.3
+PyYAML==3.12
+scikit-learn==0.19.1
+scipy==1.0.0
+six==1.11.0
+tqdm==4.19.5
